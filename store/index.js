@@ -1,15 +1,15 @@
 import axios from "~/plugins/axios"
 
-// Defines the default state (users)
+// Defines the default state (items)
 export const state = () => ({
-  users: [{id: 0, login: "victor"}]
+  items: []
 })
 
 // Here are my mutations functions,
 // they are supposed to handle actions
 export const mutations = {
-  setUsers(state, users) {
-    state.users = users
+  setItems(state, items) {
+    state.items = items
   }
 }
 
@@ -17,10 +17,15 @@ export const mutations = {
 // be executed on server start.
 // notice the commit, it will trigger the mutation function.
 export const actions = {
-  async nuxtServerInit({commit}) {
-    const response = await axios.get("users")
-    const users = response.data
+  async nuxtServerInit({ commit }) {
+    const response = await axios.get("topstories.json")
+    const ids = response.data
+    const tenIds = ids.slice(0, 10)
 
-    commit("setUsers", users)
+    const itemsPromises = tenIds.map(id => axios.get(`item/${id}.json`))
+    const itemsResponses = await Promise.all(itemsPromises)
+    const items = itemsResponses.map(res => res.data)
+
+    commit("setItems", items)
   }
 }
