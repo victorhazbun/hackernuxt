@@ -44,5 +44,8 @@ module.exports = {
   },
   plugins: [
     "~/plugins/filters"
-  ]
+  ],
+  // router: {
+  //   linkActiveClass: "something-else"
+  // }
 }
